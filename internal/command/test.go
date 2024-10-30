@@ -1146,6 +1146,7 @@ func parseAndApplyDefaultValues(unparsedVariables map[string]backend.UnparsedVar
 	inputs := make(tofu.InputValues, len(unparsedVariables))
 	for name, variable := range unparsedVariables {
 		value, valueDiags := variable.ParseVariableValue(configs.VariableParseLiteral)
+		fmt.Printf("Name: %v, ParsedValue: %v", name, value)
 		diags = diags.Append(valueDiags)
 		inputs[name] = value
 	}
@@ -1161,6 +1162,7 @@ func parseAndApplyDefaultValues(unparsedVariables map[string]backend.UnparsedVar
 		}
 
 		if variable.Default != cty.NilVal {
+			fmt.Println(name, variable.Default)
 			inputs[name] = &tofu.InputValue{
 				Value:       variable.Default,
 				SourceType:  tofu.ValueFromConfig,

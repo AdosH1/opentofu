@@ -311,6 +311,7 @@ type unparsedVariableValue struct {
 }
 
 func (v *unparsedVariableValue) ParseVariableValue(mode configs.VariableParsingMode) (*tofu.InputValue, tfdiags.Diagnostics) {
+	fmt.Printf("AMCH v.value: %v",v.value)
 	return &tofu.InputValue{
 		Value:      cty.StringVal(v.value),
 		SourceType: v.source,
