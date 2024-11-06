@@ -1043,6 +1043,10 @@ func buildInputVariablesForTest(run *moduletest.Run, file *moduletest.File, conf
 	for name := range config.Module.Variables {
 		if run != nil {
 			if expr, exists := run.Config.Variables[name]; exists {
+				fmt.Printf("buildInputVariables: name: %v, expr: %v\n", name, expr)
+				val, _ := expr.Value(evalCtx)
+				fmt.Printf("buildInputVariables: value: %v\n", val)
+
 				// Local variables take precedence.
 				variables[name] = testVariableValueExpression{
 					expr:       expr,
@@ -1146,7 +1150,9 @@ func parseAndApplyDefaultValues(unparsedVariables map[string]backend.UnparsedVar
 	inputs := make(tofu.InputValues, len(unparsedVariables))
 	for name, variable := range unparsedVariables {
 		value, valueDiags := variable.ParseVariableValue(configs.VariableParseLiteral)
-		fmt.Printf("Name: %v, ParsedValue: %v", name, value)
+		fmt.Printf("Name: %v, ParsedValue: %v\n", name, value)
+		fmt.Printf("String: %v\n", value.Value.GoString())
+
 		diags = diags.Append(valueDiags)
 		inputs[name] = value
 	}
@@ -1160,9 +1166,10 @@ func parseAndApplyDefaultValues(unparsedVariables map[string]backend.UnparsedVar
 			// already have a value.
 			continue
 		}
+		fmt.Printf("ConfigVariable: name: %v, variable: %v\n", name, variable)
 
 		if variable.Default != cty.NilVal {
-			fmt.Println(name, variable.Default)
+			fmt.Printf("Default: Name: %v, Default: %v\n", name, variable.Default.AsString())
 			inputs[name] = &tofu.InputValue{
 				Value:       variable.Default,
 				SourceType:  tofu.ValueFromConfig,
@@ -1199,6 +1206,7 @@ func (runner *TestFileRunner) prepareInputVariablesForAssertions(config *configs
 
 	if run != nil {
 		for name, expr := range run.Config.Variables {
+			fmt.Printf("Run vars: name: %v, expr: %v\n", name, expr)
 			variables[name] = testVariableValueExpression{
 				expr:       expr,
 				sourceType: tofu.ValueFromConfig,
@@ -1209,6 +1217,7 @@ func (runner *TestFileRunner) prepareInputVariablesForAssertions(config *configs
 
 	if file != nil {
 		for name, expr := range file.Config.Variables {
+			fmt.Printf("File: name: %v, expr: %v\n", name, expr)
 			if _, exists := variables[name]; exists {
 				// Then this variable was defined at the run level and we want
 				// that value to take precedence.
