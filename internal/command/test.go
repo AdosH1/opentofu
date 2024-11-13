@@ -1166,7 +1166,7 @@ func parseAndApplyDefaultValues(unparsedVariables map[string]backend.UnparsedVar
 			// already have a value.
 			continue
 		}
-		fmt.Printf("ConfigVariable: name: %v, variable: %v\n", name, variable)
+		fmt.Printf("\nConfigVariable: name: %v, variable: %v\n", name, variable)
 
 		if variable.Default != cty.NilVal {
 			fmt.Printf("Default: Name: %v, Default: %v\n", name, variable.Default.AsString())
