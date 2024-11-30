@@ -1195,6 +1195,47 @@ func TestPlan_varFileWithDecls(t *testing.T) {
 	}
 }
 
+func TestPlan_defaultObject(t *testing.T) {
+	td := t.TempDir()
+	testCopyDir(t, testFixturePath("plan-default-object"), td)
+	defer testChdir(t, td)()
+
+	p := planFixtureProvider()
+	view, done := testView(t)
+	c := &PlanCommand{
+		Meta: Meta{
+			testingOverrides: metaOverridesForProvider(p),
+			View:             view,
+		},
+	}
+
+	args := []string{}
+	code := c.Run(args)
+	output := done(t)
+	if code != 0 {
+		t.Fatalf("bad: %d\n\n%s", code, output.Stderr())
+	}
+
+	expectedIops := "iops       = null"
+	expectedSize := "size       = 60"
+	expectedThroughput := "throughput = null"
+	expectedType := "type       = \"gp3\""
+	result := output.AllWithoutFormatting()
+
+	if !strings.Contains(result, expectedIops) {
+		t.Fatalf("Expected output to contain '%s', got: %s", expectedIops, result)
+	}
+	if !strings.Contains(result, expectedSize) {
+		t.Fatalf("Expected output to contain '%s', got: %s", expectedSize, result)
+	}
+	if !strings.Contains(result, expectedThroughput) {
+		t.Fatalf("Expected output to contain '%s', got: %s", expectedThroughput, result)
+	}
+	if !strings.Contains(result, expectedType) {
+		t.Fatalf("Expected output to contain '%s', got: %s", expectedType, result)
+	}
+}
+
 func TestPlan_detailedExitcode(t *testing.T) {
 	td := t.TempDir()
 	testCopyDir(t, testFixturePath("plan"), td)

@@ -1,0 +1,3 @@
+testVar = {
+    size = 60
+}

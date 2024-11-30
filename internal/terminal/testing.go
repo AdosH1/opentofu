@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -193,4 +194,21 @@ func (o TestOutput) Stderr() string {
 		buf.Write(part.bytes)
 	}
 	return buf.String()
+}
+
+func (o TestOutput) AllWithoutFormatting() string {
+	buf := &strings.Builder{}
+	re := regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
+
+	for _, part := range o.parts {
+		var bytes = part.bytes
+		if re.Match(bytes) {
+			bytes = re.ReplaceAll(part.bytes, []byte{})
+		}
+		buf.Write(bytes)
+	}
+	return buf.String()
+	// test := []byte(buf.String())
+	// test2 := re.ReplaceAll(test, []byte{})
+	// return string(test2)
 }
