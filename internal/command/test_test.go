@@ -150,6 +150,10 @@ func TestTest(t *testing.T) {
 			expected: "1 passed, 0 failed.",
 			code:     0,
 		},
+		"default_object_variables": {
+			expected: "1 passed, 0 failed.",
+			code:     0,
+		},
 		"undefined_variables": {
 			expected: "1 passed, 0 failed.",
 			code:     0,

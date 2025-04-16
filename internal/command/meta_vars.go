@@ -82,6 +82,9 @@ func (m *Meta) collectVariableValues() (map[string]backend.UnparsedVariableValue
 	// There's the original terraform.tfvars (DefaultVarsFilename) along with the later-added
 	// search for all files ending in .auto.tfvars.
 	diags = diags.Append(m.addVarsFromDir(".", ret))
+	for n, vars := range ret {
+		fmt.Printf("AMCH addVarsFromDir n:%v unparsed: %v\n", n, vars)
+	}
 
 	// Finally we process values given explicitly on the command line, either
 	// as individual literal settings or as additional files to read.
